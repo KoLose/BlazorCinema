@@ -1,0 +1,32 @@
+@page "/test"
+@using BlazorApp.ApiRequest
+@using BlazorApp.ApiRequest.Model
+
+<div class="cards">
+    @foreach (var movie in movies)
+    {
+        <div class="card">
+            <img src="@movie.ImageUrl" alt="qq"/>
+            <p>@movie.Title</p>
+            <p>@movie.ReleaseDate</p>
+            <p>@movie.Rating ⭐</p>
+        </div>
+    }
+</div>
+
+@code {
+    private List<MovieDataShort> movies = new();
+    [Inject] private RequestApi _apiRequest { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetAllMovies();
+    }
+
+    private async Task GetAllMovies()
+    {
+        var movieData = await _apiRequest.GetAllMoviesAsync();
+        //users = userData.data.users ?? new List<UserDataShort>();
+        movies = movieData?.data?.movies ?? new List<MovieDataShort>();
+    }
+}

@@ -1,0 +1,33 @@
+# Build outputs
+bin/
+obj/
+out/
+publish/
+
+# User-specific files
+*.user
+*.rsuser
+*.suo
+*.userprefs
+
+# IDE folders and files
+.vs/
+.vscode/
+.idea/
+
+# JetBrains Rider caches
+*.sln.iml
+
+# Logs
+*.log
+
+# NuGet packages folder (if local)
+packages/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test results
+TestResults/
+*.trx

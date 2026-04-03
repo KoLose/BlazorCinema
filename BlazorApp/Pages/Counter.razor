@@ -1,0 +1,50 @@
+﻿@page "/counter"
+@using BlazorApp.ApiRequest
+@using BlazorApp.ApiRequest.Model
+
+<PageTitle>MovieTable</PageTitle>
+<p><a href="createmovie">Create new</a></p>
+<p><a href="test">Test</a></p>
+<table class="table">
+    <thead>
+    <tr>
+        <th>id</th>
+        <th>Title</th>
+        <th>Description</th>
+        <th>ReleaseData</th>
+        <th>Rating</th>
+
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var movie in movies)
+    {
+        <tr>
+            <td>@movie.MovieID</td>
+            <td>@movie.Title</td>
+            <td>@movie.Description</td>
+            <td>@movie.ReleaseDate</td>
+            <td>@movie.Rating</td>
+            <td><a href="#">Edit</a></td>
+            <td><a href="#">Delete</a></td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+@code {
+    private List<MovieDataShort> movies = new();
+    [Inject] private RequestApi _apiRequest { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetAllMovies();
+    }
+
+    private async Task GetAllMovies()
+    {
+        var movieData = await _apiRequest.GetAllMoviesAsync();
+        //users = userData.data.users ?? new List<UserDataShort>();
+        movies = movieData?.data?.movies ?? new List<MovieDataShort>();
+    }
+}

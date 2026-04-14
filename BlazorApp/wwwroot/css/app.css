@@ -137,3 +137,53 @@ code {
 .card p {
     margin: 5px 0;
 }
+
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.auth-card {
+    border: 1px solid #2b2f4a;
+    border-radius: 5px;
+    padding: 30px;
+    box-shadow: 5px 5px 13px -2px gray;
+    width: 500px;
+    background: white;
+    margin-bottom: 200px;
+}
+
+.auth-card label {
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 5px;
+}
+
+.auth-card input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.auth-card button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 20px;
+    background-color: #1b6ec2;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.auth-card a {
+    display: block;
+    text-align: center;
+    margin-top: 15px;
+    color: #0071c1;
+    text-decoration: none;
+}

@@ -13,10 +13,39 @@ public class RequestApi
     {
         _httpClient = httpClient;
     }
+
+    public async Task<UserData> GetAllUsersAsync()
+    {
+        var url = "/GetAllUsers";
+
+        try
+        {
+            var response = await _httpClient.GetAsync(url).ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
+
+            var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+            if (string.IsNullOrEmpty(responseContent))
+            {
+                return new UserData();
+            }
+
+            var userData = JsonSerializer.Deserialize<UserData>(responseContent, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+            });
+            
+            return userData ?? new UserData();
+        }
+        catch (Exception ex)
+        {
+            return new UserData();
+        }
+    }
     
     public async Task<MovieData> GetAllMoviesAsync()
     {
-        var url = "/getAllMovies";
+        var url = "/GetAllMovies";
 
         try
         {
@@ -30,12 +59,12 @@ public class RequestApi
                 return new MovieData();
             }
 
-            var userData = JsonSerializer.Deserialize<MovieData>(responseContent, new JsonSerializerOptions
+            var movieData = JsonSerializer.Deserialize<MovieData>(responseContent, new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true,
             });
             
-            return userData ?? new MovieData();
+            return movieData ?? new MovieData();
         }
         catch (Exception ex)
         {

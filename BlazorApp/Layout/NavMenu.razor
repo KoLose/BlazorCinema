@@ -1,4 +1,6 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿@using BlazorApp.ApiRequest
+@inject CurrentUser CurrentUser
+<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">BlazorApp</a>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
@@ -23,6 +25,16 @@
             <NavLink class="nav-link" href="weather">
                 <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
             </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="userpage">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> UserPage
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+                <NavLink class="nav-link" href="adminpage">
+                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> AdminPage
+                </NavLink>
         </div>
     </nav>
 </div>

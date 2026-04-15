@@ -1,5 +1,15 @@
 @page "/adminpage"
-<h3>AdminPage</h3>
+@using BlazorApp.ApiRequest
+@inject CurrentUser CurrentUser;
+@inject NavigationManager Nav
+
+@if (!CurrentUser.IsLoggedIn || CurrentUser.CurrentRole != "Admin")
+{ 
+    Nav.NavigateTo("/");
+    return;
+}
+
+<a href="/editusers">Редактирование пользователей</a>
 
 @code {
     

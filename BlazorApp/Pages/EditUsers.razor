@@ -12,15 +12,39 @@
             <p>Пароль: @user.Password</p>
             <p>Роль: @user.Role</p>
             <div class="card-buttons">
-                <button class="btn-edit" ...>Редактировать</button>
-                <button class="btn-delete" ...>Удалить</button>
+                <button class="btn-edit" @onclick="(() => EditUser(user))">Редактировать</button>
+                <button class="btn-delete" @onclick="(() => DeleteUser(user))">Удалить</button>
             </div>
         </div>
     }
 </div>
 
+@if (updateUser != null)
+{
+    <div class="modal-overlay" @onclick="CloseModal">
+        <div class="modal-content" @onclick:stopPropagation="true">
+            <h3>Редактирование: @updateUser.UserName</h3>
+            
+            <label>Имя:</label>
+            <input type="text" @bind="updateUser.UserName" />
+            
+            <label>Почта:</label>
+            <input type="text" @bind="updateUser.Mail" />
+            
+            <label>Пароль</label>
+            <input type="text" @bind="updateUser.Password" />
+            
+            <div class="modal-actions">
+                <button class="btn-edit" @onclick="SaveChanges">Сохранить</button>
+                <button class="btn-delete" @onclick="CloseModal">Отмена</button>
+            </div>
+        </div>
+    </div>
+}
+
 @code {
     private List<UserDataShort> users = new();
+    private UserDataShort? updateUser;
     [Inject] private RequestApi _apiRequest { get; set; }
 
     protected override async Task OnInitializedAsync()
@@ -31,7 +55,39 @@
     private async Task GetAllUsers()
     {
         var userData = await _apiRequest.GetAllUsersAsync();
-        //users = userData.data.users ?? new List<UserDataShort>();
         users = userData?.data?.users ?? new List<UserDataShort>();
+    }
+
+    private void EditUser(UserDataShort user)
+    {
+        updateUser = new UserDataShort 
+        { 
+            UserID = user.UserID, 
+            UserName = user.UserName, 
+            Mail = user.Mail, 
+            Password = user.Password 
+        };
+    }
+    
+    private void CloseModal()
+    {
+        updateUser = null;
+    }
+    
+    private async Task SaveChanges()
+    {
+        if (updateUser != null)
+        {
+            var result = await _apiRequest.PatchUserAsync(updateUser);
+            Console.WriteLine(result);
+            
+            CloseModal();
+            await GetAllUsers(); 
+        }
+    }
+
+    private async Task DeleteUser(UserDataShort user)
+    {
+        
     }
 }

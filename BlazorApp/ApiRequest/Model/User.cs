@@ -4,6 +4,7 @@ namespace BlazorApp.ApiRequest.Model;
 
 public class UserDataShort
 {
+    public int UserID { get; set; }
     public string UserName { get; set; }
     public string Mail { get; set; }
     public string Password { get; set; }
@@ -18,13 +19,18 @@ public class UserData
     public bool status { get; set; }
 }
 
+public class UserDataContainer
+{
+    public List<UserDataShort> users { get; set; }
+}
+
 public class UserAddData
 {
     public bool status { get; set; }
     public string role {get; set;}
 }
 
-public class UserDataContainer
+public class UserUpdateData
 {
-    public List<UserDataShort> users { get; set; }
+    public bool status { get; set; }
 }

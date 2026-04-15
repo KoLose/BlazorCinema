@@ -95,4 +95,28 @@ public class RequestApi
             return new UserAddData();
         }
     }
+
+    public async Task<UserUpdateData> PatchUserAsync(UserDataShort updateUser)
+    {
+        var url = "/PatchUserRole";
+        try
+        {
+            var response = await _httpClient.PatchAsJsonAsync(url, updateUser).ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
+            
+            var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+            var userData = JsonSerializer.Deserialize<UserUpdateData>(responseContent, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+            });
+            
+            return userData ?? new UserUpdateData();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Ошибка: {ex.Message}");
+            return new UserUpdateData();
+        }
+    }
 }

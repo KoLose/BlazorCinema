@@ -42,18 +42,18 @@
         
         var result = await _apiRequest.PostUserAsync(user);
 
-        if (result.role != null)
+        if (result != null)
         {
-            CurrentUser.Login(result.role);
+            CurrentUser.Login(result);
         }
         if (result.status)
         {
-            if (result.role == "User")
+            if (result.Role == "User")
             {
                 Nav.NavigateTo("/userpage");
             }
 
-            if (result.role == "Admin")
+            if (result.Role == "Admin")
             {
                 Nav.NavigateTo("/adminpage");
             }

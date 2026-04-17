@@ -1,6 +1,128 @@
 @page "/userpage"
+@using BlazorApp.ApiRequest
+@using BlazorApp.ApiRequest.Model
+@inject CurrentUser CurrentUser;
+@inject NavigationManager Nav
+
 <h3>User</h3>
 
+@if (!CurrentUser.IsLoggedIn)
+{ 
+    Nav.NavigateTo("/");
+    return;
+}
+
+<div class="profile-card">
+    <div class="info-row">
+        <span class="label">Имя:</span>
+        <span class="value">@currentUser.UserName</span>
+    </div>
+            
+    <div class="info-row">
+        <span class="label">Почта:</span>
+        <span class="value">@currentUser.Mail</span>
+    </div>
+            
+    <div class="info-row">
+        <span class="label">Пароль:</span>
+        <span class="value">********</span> 
+    </div>
+
+    <button class="btn-edit" @onclick="OpenEditModal">Редактировать</button>
+</div>
+
+@if (updateUser != null)
+{
+    <div class="modal-overlay" @onclick="CloseModal">
+        <div class="modal-content" @onclick:stopPropagation="true">
+            <h3>Редактирование профиля</h3>
+            
+            <label>Имя:</label>
+            <input type="text" @bind="updateUser.UserName" />
+            
+            <label>Почта:</label>
+            <input type="text" @bind="updateUser.Mail" />
+            
+            <label>Новый пароль:</label>
+            <input type="text" @bind="updateUser.Password"/>
+            
+            <div class="modal-actions">
+                <button class="btn-edit" @onclick="SaveChanges">Сохранить</button>
+                <button class="btn-delete" @onclick="CloseModal">Отмена</button>
+            </div>
+        </div>
+    </div>
+}
+
 @code {
+    private UserDataShort? currentUser;
+    private UserDataShort? updateUser;
     
+    [Inject] private RequestApi _apiRequest { get; set; }
+    [Inject] private CurrentUser _session { get; set; } // Инжектим сервис сессии
+
+    protected override void OnInitialized()
+    {
+        // Заполняем локальный объект данными из сессии (без запроса к API)
+        if (_session.IsLoggedIn)
+        {
+            currentUser = new UserDataShort
+            {
+                // UserID пока 0, если ты не сохранял его при логине. 
+                // Для редактирования он нужен, так что лучше добавь ID в CurrentUser позже.
+                // Пока оставим заглушку или найдем по почте, если критично.
+                UserID = _session.CurrentID,
+                UserName = _session.CurrentName,
+                Mail = _session.CurrentMail,
+                Password = _session.CurrentPassword,
+                Role = _session.CurrentRole
+            };
+        }
+        else 
+        {
+            // Если вдруг не залогинен (хотя проверка выше есть), можно редиректить
+            // Nav.NavigateTo("/");
+        }
+    }
+
+    private void OpenEditModal()
+    {
+        if (currentUser != null)
+        {
+            // Создаем копию для редактирования
+            updateUser = new UserDataShort
+            {
+                UserID = currentUser.UserID,
+                UserName = currentUser.UserName,
+                Mail = currentUser.Mail,
+                Password = currentUser.Password
+            };
+        }
+    }
+    
+    private void CloseModal()
+    {
+        updateUser = null;
+    }
+
+    private async Task SaveChanges()
+    {
+        if (updateUser != null)
+        {
+            var result = await _apiRequest.PatchUserAsync(updateUser);
+            
+            if (result.status)
+            {
+                // 1. Обновляем экран
+                currentUser = updateUser; 
+                
+                // 2. ВАЖНО: Обновляем сессию, чтобы данные были актуальны везде
+                _session.CurrentName = updateUser.UserName;
+                _session.CurrentMail = updateUser.Mail;
+                _session.CurrentPassword = updateUser.Password;
+                
+                CloseModal();
+            }
+        }
+    }
 }
